@@ -174,7 +174,7 @@ exports.play = function (req, res, next) {
 };
 
 
-// GET /quizzes/:quizId/random_result
+// GET /quizzes/:quizId/randomcheck
 exports.randomcheck = function (req, res, next) {
 
     var answer = req.query.answer || "";
@@ -187,7 +187,7 @@ exports.randomcheck = function (req, res, next) {
     }else{
        req.session.score +=1;
     }    
-    res.render('quizzes/result', {
+    res.render('quizzes/random_result', {
         score: req.session.score,
         quiz: req.quiz,
         result: result,
@@ -221,10 +221,10 @@ exports.randomplay = function (req, res, next) {
             if(req.session.score == req.session.array.length-1){
                 req.session.array.push(quiz.id);
             }
-                res.render('quizzes/random_play',{
-                    quiz: quiz,
-                    score:req.session.score
-                });
+            res.render('quizzes/random_play',{
+                 quiz: quiz,
+                 score: req.session.score
+            });
             
         } else {
             var score = req.session.score;
