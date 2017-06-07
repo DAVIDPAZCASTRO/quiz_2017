@@ -45,7 +45,8 @@ exports.adminOrAuthorRequired = function(req, res, next){
 exports.index = function (req, res, next) {
 
     var countOptions = {
-        where: {}
+        where: {},
+        include:{}
     };
 
     var title = "Preguntas";
@@ -63,6 +64,11 @@ exports.index = function (req, res, next) {
         countOptions.where.AuthorId = req.user.id;
         title = "Preguntas de " + req.user.username;
     }
+
+    countOptions.include = [
+        {model: models.Tip, include: [{model: models.User, as: 'Author'}]},
+        {model: models.User, as: 'Author'}
+    ];
 
     models.Quiz.count(countOptions)
     .then(function (count) {
@@ -82,7 +88,6 @@ exports.index = function (req, res, next) {
 
         findOptions.offset = items_per_page * (pageno - 1);
         findOptions.limit = items_per_page;
-        findOptions.include = [{model: models.User, as: 'Author'}];
 
         return models.Quiz.findAll(findOptions);
     })
@@ -188,7 +193,7 @@ exports.destroy = function (req, res, next) {
     req.quiz.destroy()
     .then(function () {
         req.flash('success', 'Quiz borrado con éxito.');
-        res.redirect('/goback');
+        res.redirect('/quizzes');
     })
     .catch(function (error) {
         req.flash('error', 'Error al editar el Quiz: ' + error.message);
