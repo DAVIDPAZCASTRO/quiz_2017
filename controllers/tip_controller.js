@@ -5,7 +5,13 @@ var Sequelize = require('sequelize');
 // Autoload la pista asociado a :tipId
 exports.load = function (req, res, next, tipId) {
 
-    models.Tip.findById(tipId)
+    models.Tip.findById(tipId, {
+        include: [
+            {model: models.Quiz},
+            {model: models.User,
+                as: 'Author'}
+        ]
+    })
     .then(function (tip) {
         if (tip) {
             req.tip = tip;
@@ -46,12 +52,12 @@ exports.create = function (req, res, next) {
             AuthorId: authorId
         });
 
-    tip.save()
+    tip.save({fields: ["text", "QuizId", "AuthorId"]})
     .then(function (tip) {
         req.flash('success', 'Pista creado con éxito.');
 
-        res.redirect("back");
-        // res.redirect('/quizzes/' + req.quiz.id);
+        //res.redirect("back");
+        res.redirect('/quizzes/' + req.quiz.id);
     })
     .catch(Sequelize.ValidationError, function (error) {
 
