@@ -174,29 +174,21 @@ exports.play = function (req, res, next) {
 };
 
 
-// GET /quizzes/:quizId/randomcheck
-exports.randomcheck = function (req, res, next) {
+// GET /quizzes/:quizId/check
+exports.check = function (req, res, next) {
 
     var answer = req.query.answer || "";
 
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
 
-    if(!result){
-        req.session.score=0;
-        req.session.array=[-1];
-    }else{
-       req.session.score +=1;
-    }    
-    res.render('quizzes/random_result', {
-        score: req.session.score,
+    res.render('quizzes/result', {
         quiz: req.quiz,
         result: result,
         answer: answer
     });
-    
 };
 
-// GET /quizzes/:quizId/randomplay
+
 exports.randomplay = function (req, res, next) {
 
     req.session.score = req.session.score || 0;
@@ -240,3 +232,26 @@ exports.randomplay = function (req, res, next) {
         next(error);
     });
 };
+
+// GET /quizzes/:quizId/randomcheck
+exports.randomcheck = function (req, res, next) {
+
+    var answer = req.query.answer || "";
+
+    var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+
+    if(!result){
+        req.session.score=0;
+        req.session.array=[-1];
+    }else{
+       req.session.score +=1;
+    }    
+    res.render('quizzes/random_result', {
+        score: req.session.score,
+        quiz: req.quiz,
+        result: result,
+        answer: answer
+    });
+    
+};
+
